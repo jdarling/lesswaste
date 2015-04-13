@@ -20021,12 +20021,60 @@ module.exports = require('./lib/React');
 
 },{"./lib/React":33}],165:[function(require,module,exports){
 var React = require('react');
+var Support = require('../lib/support');
+
+var FOOD_WASTE_AVG = 1.8;
+var MEAT_WASTE_AVG = 1.5;
+var TREES_PER_TON = 5;
+var TON = 2000;
+
+var references = [
+  'http://www.withouthotair.com/',
+  'https://www.americanforests.org/assumptions-and-sources/#waste',
+  'http://www.icbe.com/carbondatabase/CO2volumecalculation.asp',
+  'http://www.carbonify.com/carbon-calculator.htm',
+  'http://large.stanford.edu/courses/2012/ph240/micks2/',
+];
 
 var Page = React.createClass({displayName: "Page",
+  getInitialState: function(){
+    return {
+      footprint: 0
+    };
+  },
+  fieldChanged: function(){
+    var waste = parseInt(Support.val(this.refs.waste.getDOMNode()))||0;
+    var recycle = parseInt(Support.val(this.refs.recycle.getDOMNode()))||0;
+    var footprint = (waste * 0.94) + (recycle * 0.6236);
+    var couldaBeen = (waste + recycle) * 0.94;
+    var savings = couldaBeen - footprint;
+    this.setState({
+      footprint: footprint,
+      couldaBeen: couldaBeen,
+      savings: savings,
+    });
+  },
   render: function(){
+    var referencesList = references.map(function(ref){
+      return React.createElement("li", {key: ref}, 
+          React.createElement("a", {href: ref, target: "_blank"}, ref)
+        );
+    });
     return (
       React.createElement("div", null, 
-        React.createElement("a", {href: "https://www.americanforests.org/assumptions-and-sources/#waste", target: "_blank"}, "Source https://www.americanforests.org/assumptions-and-sources/"), 
+        React.createElement("div", null, 
+          React.createElement("div", null, 
+            "Lbs Waste: ", React.createElement("input", {type: "number", ref: "waste", onChange: this.fieldChanged})
+          ), 
+          React.createElement("div", null, 
+            "Lbs Recycled: ", React.createElement("input", {type: "number", ref: "recycle", onChange: this.fieldChanged})
+          ), 
+          React.createElement("div", null, 
+            "Carbon Footprint: ", this.state.footprint, " CO2e", React.createElement("br", null), 
+            "Could have been: ", this.state.couldaBeen, " CO2e", React.createElement("br", null), 
+            "Savings: ", this.state.savings, " CO2e"
+          )
+        ), 
         React.createElement("h2", null, "Waste"), 
         React.createElement("p", null, 
           "In 2009, the per capita generation of waste was 4.34 pounds per person" + ' ' +
@@ -20071,6 +20119,10 @@ var Page = React.createClass({displayName: "Page",
           "trash produces ", React.createElement("strong", null, "0.94"), " pounds of CO2e per pound, we subtracted 0.3164 lbs" + ' ' +
           "showing that though it is better to recycle, it still produces ", React.createElement("strong", null, "0.6236 "), 
           "pounds of CO2e per pound of recycled material."
+        ), 
+        React.createElement("h3", null, "References"), 
+        React.createElement("ul", null, 
+          referencesList
         )
       )
     );
@@ -20080,7 +20132,7 @@ var Page = React.createClass({displayName: "Page",
 module.exports = Page;
 
 
-},{"react":164}],166:[function(require,module,exports){
+},{"../lib/support":167,"react":164}],166:[function(require,module,exports){
 var React = require('react');
 var Footprint = require('./footprint.jsx');
 

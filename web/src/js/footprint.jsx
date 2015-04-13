@@ -1,10 +1,58 @@
 var React = require('react');
+var Support = require('../lib/support');
+
+var FOOD_WASTE_AVG = 1.8;
+var MEAT_WASTE_AVG = 1.5;
+var TREES_PER_TON = 5;
+var TON = 2000;
+
+var references = [
+  'http://www.withouthotair.com/',
+  'https://www.americanforests.org/assumptions-and-sources/#waste',
+  'http://www.icbe.com/carbondatabase/CO2volumecalculation.asp',
+  'http://www.carbonify.com/carbon-calculator.htm',
+  'http://large.stanford.edu/courses/2012/ph240/micks2/',
+];
 
 var Page = React.createClass({
+  getInitialState: function(){
+    return {
+      footprint: 0
+    };
+  },
+  fieldChanged: function(){
+    var waste = parseInt(Support.val(this.refs.waste.getDOMNode()))||0;
+    var recycle = parseInt(Support.val(this.refs.recycle.getDOMNode()))||0;
+    var footprint = (waste * 0.94) + (recycle * 0.6236);
+    var couldaBeen = (waste + recycle) * 0.94;
+    var savings = couldaBeen - footprint;
+    this.setState({
+      footprint: footprint,
+      couldaBeen: couldaBeen,
+      savings: savings,
+    });
+  },
   render: function(){
+    var referencesList = references.map(function(ref){
+      return <li key={ref}>
+          <a href={ref} target="_blank">{ref}</a>
+        </li>;
+    });
     return (
       <div>
-        <a href="https://www.americanforests.org/assumptions-and-sources/#waste" target="_blank">Source https://www.americanforests.org/assumptions-and-sources/</a>
+        <div>
+          <div>
+            Lbs Waste: <input type="number" ref="waste" onChange={this.fieldChanged} />
+          </div>
+          <div>
+            Lbs Recycled: <input type="number" ref="recycle" onChange={this.fieldChanged} />
+          </div>
+          <div>
+            Carbon Footprint: {this.state.footprint} CO2e<br />
+            Could have been: {this.state.couldaBeen} CO2e<br />
+            Savings: {this.state.savings} CO2e
+          </div>
+        </div>
         <h2>Waste</h2>
         <p>
           In 2009, the per capita generation of waste was 4.34 pounds per person
@@ -50,6 +98,10 @@ var Page = React.createClass({
           showing that though it is better to recycle, it still produces <strong>0.6236 </strong>
           pounds of CO2e per pound of recycled material.
         </p>
+        <h3>References</h3>
+        <ul>
+          {referencesList}
+        </ul>
       </div>
     );
   }
