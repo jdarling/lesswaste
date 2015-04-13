@@ -1,0 +1,19 @@
+{
+  "name": "lesswaste",
+  "version": "0.0.1",
+  "description": "Using easy to locate parts and a Raspberry PI 2 to create a game of recycling",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/jdarling/lesswaste.git"
+  },
+  "author": "Jeremy Darling <jeremy.darling@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/jdarling/lesswaste/issues"
+  },
+  "homepage": "https://github.com/jdarling/lesswaste"
+}
